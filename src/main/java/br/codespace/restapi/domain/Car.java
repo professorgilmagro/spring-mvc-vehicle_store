@@ -4,6 +4,7 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -14,11 +15,13 @@ import javax.validation.constraints.NotNull;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
-@Table(name="Cars")
+@Table(name="cars")
+@EntityListeners(AuditingEntityListener.class)
 @JsonIgnoreProperties(value = {"createdAt", "updatedAt"}, allowGetters = true)
 public class Car {
 	@Id
@@ -31,9 +34,10 @@ public class Car {
 	private int year;
 	private Date manufactureDate;
 	private int model;
-	private String manufacturerName;
+	private String manufacturer;
 	private String version;
 	private String fuelType;
+	private String color;
 
 	@CreatedDate
 	@Temporal(TemporalType.TIMESTAMP)
@@ -43,14 +47,32 @@ public class Car {
 	@Column(nullable = false)
 	@Temporal(TemporalType.TIMESTAMP)
     @LastModifiedDate
-	private Date updatedAt;
+	private Date updatedAt;	
 	
-	public long getId() {
+	@Override
+	public String toString() {
+		return String.format(
+				"%s %s %s %s/%s",
+				this.getName(),
+				this.getVersion(),
+				this.getFuelType(),
+				this.getModel(),
+				this.getYear()
+		);
+	}
+
+	/**
+	 * Retorna o código de identificação do carro
+	 * @return Long
+	 */
+	public Long getId() {
 		return id;
 	}
-	public void setId(Long id) {
-		this.id = id;
-	}
+	
+	/**
+	 * Retorna o nome do carro definido neste objeto
+	 * @return String
+	 */
 	public String getName() {
 		return name;
 	}
@@ -81,11 +103,11 @@ public class Car {
 	public void setModel(int model) {
 		this.model = model;
 	}
-	public String getManufacturerName() {
-		return manufacturerName;
+	public String getManufacturer() {
+		return manufacturer;
 	}
-	public void setManufacturerName(String manufacturerName) {
-		this.manufacturerName = manufacturerName;
+	public void setManufacturer(String manufacturerName) {
+		this.manufacturer = manufacturerName;
 	}
 	public String getVersion() {
 		return version;
@@ -99,6 +121,14 @@ public class Car {
 	public void setFuelType(String fuelType) {
 		this.fuelType = fuelType;
 	}
+
+	public String getColor() {
+		return color;
+	}
+	public void setColor(String color) {
+		this.color = color;
+	}
+	
 	public Date getCreatedAt() {
 		return createdAt;
 	}
